@@ -9,8 +9,9 @@ import dangerzone.items.Item;
 
 public class ItemOBJModel extends Item {
 	
-	ModelObjTest ma = null;
+	//ModelObjTest ma = null;
 	//ModelBanshee ma = null;
+	ModelCube ma = null;
 	public ItemOBJModel(String n, String txt) {
 		super(n, txt);
 		
@@ -19,7 +20,7 @@ public class ItemOBJModel extends Item {
 	public void renderMeHeld(WorldRenderer wr, Entity e, InventoryContainer ic, boolean isdisplay){
 		//texture is already auto-loaded for us
 		if(ma == null){
-			ma = new ModelObjTest();
+			ma = new ModelCube();
 		}
 		GL11.glTranslatef(-1, -8, 1);
 		GL11.glScalef(0.6f, 0.6f, 0.6f);

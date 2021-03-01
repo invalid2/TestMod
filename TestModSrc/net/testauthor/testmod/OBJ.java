@@ -21,22 +21,22 @@ import org.lwjgl.util.vector.Vector3f;
 public class OBJ {
 	
 	//Name of the object group that is part of the obj model
-	String object_group = "main";
+	String objectGroup = "main";
 	List<OBJMaterial> materials = null;
 	List<Vector3f> vertices = null;
-	List<Vector2f> texture_coordinates = null;
+	List<Vector2f> textureCoordinates = null;
 	List<Vector3f> normals = null;
 	List<Face> faces = null;
+	FaceType faceType;
 	
 	/*
 	 * Due to the separation the model in parts I need this or
 	 * there will be array out of bounds crashes!
 	 */
-	int face_type;
-	int count_vertices = 0;
-	int count_txtcoords = 0;
-	int count_normals = 0;
-	int count_faces = 0;
+	int countVertices = 0;
+	int countTextureCoords = 0;
+	int countNormals = 0;
+	int countFaces = 0;
 	
 	/**
 	 * 
@@ -50,10 +50,10 @@ public class OBJ {
 	public OBJ(String object_group, List<OBJMaterial> materials, List<Vector3f> vertices, List<Vector2f> texture_coordinates, List<Vector3f> normals, List<Face> faces) {
 		super();
 		
-		this.object_group = object_group;
+		this.objectGroup = object_group;
 		this.materials = materials;
 		this.vertices = vertices;
-		this.texture_coordinates = texture_coordinates;
+		this.textureCoordinates = texture_coordinates;
 		this.normals = normals;
 		this.faces = faces;
 	}
@@ -62,12 +62,16 @@ public class OBJ {
 		this(new String(), new ArrayList<OBJMaterial>(), new ArrayList<Vector3f>(), new ArrayList<Vector2f>(), new ArrayList<Vector3f>(), new ArrayList<Face>());
 	}
 	
+	public String getObjectGroup() {
+		return objectGroup;
+	}
+	
 	public List<Vector3f> getVertices() {
 		return vertices;
 	}
 	
 	public List<Vector2f> getTextureCoordinates() {
-		return texture_coordinates;
+		return textureCoordinates;
 	}
 	
 	public List<Vector3f> getNormals() {
@@ -78,8 +82,28 @@ public class OBJ {
 		return faces;
 	}
 	
-	public int getFaceType() {
-		return face_type;
+	public FaceType getFaceType() {
+		return faceType;
+	}
+	
+	public void setObjectGroup(String objectGroup) {
+		this.objectGroup = objectGroup;
+	}
+	
+	public void setCountVertices(int countVertices) {
+		this.countVertices = countVertices;
+	}
+	
+	public void setCountTextureCoords(int countTextureCoords) {
+		this.countTextureCoords = countTextureCoords;
+	}
+	
+	public void setCountNormals(int countNormals) {
+		this.countNormals = countNormals;
+	}
+	
+	public void setCountFaces(int countFaces) {
+		this.countFaces = countFaces;
 	}
 	
 	/**
@@ -88,35 +112,34 @@ public class OBJ {
 	 *
 	 */
 	public static class Face extends Object {
-		private int[] vertex_indices;
-		private int[] texture_coordinates_indices;
-		private int[] normal_indices;
+		private int[] vertexIndices;
+		private int[] textureCoordinatesIndices;
+		private int[] normalIndices;
 		
 		public int[] getVertices() {
-			return this.vertex_indices;
+			return this.vertexIndices;
 		}
 		
 		public int[] getTextureCoordinates() {
-			return this.texture_coordinates_indices;
+			return this.textureCoordinatesIndices;
 		}
 		
 		public int[] getNormals() {
-			return this.normal_indices;
+			return this.normalIndices;
 		}
-		public Face(int[] vertex_indices, int[] texture_coordinate_indices, int[] normal_indices) {
+		public Face(int[] vertexIndices, int[] textureCoordinatesIndices, int[] normalIndices) {
 			super();
-			this.vertex_indices = vertex_indices;
-			this.texture_coordinates_indices = texture_coordinate_indices;
-			this.normal_indices = normal_indices;
+			this.vertexIndices = vertexIndices;
+			this.textureCoordinatesIndices = textureCoordinatesIndices;
+			this.normalIndices = normalIndices;
 		}
 	}
 	
 	/**
-	 * Class containing the face type constants
+	 * Enum containing the face type constants
 	 * @author InvalidName
 	 */
-	public static class FaceType {
-		public static final int F_TRI = 0;
-		public static final int F_QUAD = 1;
+	public enum FaceType {
+		F_TRI, F_QUAD
 	}
 }

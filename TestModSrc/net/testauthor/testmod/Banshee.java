@@ -14,6 +14,8 @@ public class Banshee extends EntityLiving {
 		setMaxHealth(100f);
 		setHealth(100f);
 		setDefense(1f);
+		this.height = 0.1f;
+		this.width = 0.000001f;
 		uniquename = "TestMod:Banshee";
 		enable_lookaround = false;
 		movefrequency = Integer.MAX_VALUE;

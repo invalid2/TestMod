@@ -3,6 +3,7 @@ package net.testauthor.testmod;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -24,15 +25,16 @@ public class OBJLoader {
 	 * Loads wavefront file from the file system with the use of a scanner
 	 * @param path File path of model
 	 * @param materials OBJMaterial list to be assigned for every object group
-	 * @param face_type Type of face the model has, either quads or tris
+	 * @param faceType Type of face the model has, either quads(F_QUAD) or tris(F_TRI)
+	 * @param flipTxtCoordsY Flip vertex texture coords on the y axis, necessary for compatibility with certain blender models
 	 * @return Returns a list of OBJ aka object groups of the model
 	 */
-	public static List<OBJ> getModel(String path, List<OBJMaterial> materials, int face_type) {
+	public static List<OBJ> getModel(String path, List<OBJMaterial> materials, FaceType faceType, boolean flipTxtCoordsY) {
 		
-		int count_vertices = 0;
-		int count_txtcoords = 0;
-		int count_normals = 0;
-		int count_faces = 0;
+		int countVertices = 0;
+		int countTextureCoords = 0;
+		int countNormals = 0;
+		int countFaces = 0;
 		
 		try {
 			//File scanner
@@ -45,7 +47,7 @@ public class OBJLoader {
 			//String name_polygon_group = "default";
 			boolean hasData = false;
 			OBJ current = new OBJ();
-			current.object_group = "main";
+			current.objectGroup = "main";
 			while(scanner.hasNextLine()) {
 				String line = scanner.nextLine();
 				
@@ -58,7 +60,7 @@ public class OBJLoader {
 							break;
 						case "usemtl":
 							for(OBJMaterial material : materials) {
-								if(split[1].equals(material.name_material))
+								if(split[1].equals(material.getName()))
 									current.materials.add(material);
 							}
 							break;
@@ -66,33 +68,38 @@ public class OBJLoader {
 							if(hasData)
 								model.add(current);
 							current = new OBJ();
-							current.object_group = split[1];
-							current.count_normals = count_normals;
-							current.count_txtcoords = count_txtcoords;
-							current.count_vertices = count_vertices;
-							current.count_faces = count_faces;
+							current.setObjectGroup(split[1]);
+							current.setCountNormals(countNormals);
+							current.setCountTextureCoords(countTextureCoords);
+							current.setCountVertices(countVertices);
+							current.setCountFaces(countFaces);
 							hasData = true;
 							break;
 						case "g":
 							break;
 						case "vn":
 							current.normals.add(new Vector3f( Float.parseFloat(split[1]), Float.parseFloat(split[2]) , Float.parseFloat(split[3])) );
-							count_normals++;
+							countNormals++;
 							break;
 						case "vt":
-							current.texture_coordinates.add(new Vector2f(Float.parseFloat(split[1]), Float.parseFloat(split[2])) );
-							count_txtcoords++;
+							if(flipTxtCoordsY) {
+								current.textureCoordinates.add(new Vector2f(Float.parseFloat(split[1]), 1-Float.parseFloat(split[2])) );
+							} else {
+								current.textureCoordinates.add(new Vector2f(Float.parseFloat(split[1]), Float.parseFloat(split[2])) );
+							
+							}
+							countTextureCoords++;
 							break;
 						case "v":
 							current.vertices.add(new Vector3f( Float.parseFloat(split[1]), Float.parseFloat(split[2]) , Float.parseFloat(split[3])) );
-							count_vertices++;
+							countVertices++;
 							break;
 						case "f":
 							String[] split_1 = split[1].split("/");
 							String[] split_2 = split[2].split("/");
 							String[] split_3 = split[3].split("/");
 							
-							if(face_type == FaceType.F_TRI) {
+							if(faceType == FaceType.F_TRI) {
 								current.faces.add(new Face(
 									new int[]{Integer.parseInt(split_1[0]), Integer.parseInt(split_2[0]), Integer.parseInt(split_3[0])},
 									new int[]{Integer.parseInt(split_1[1]), Integer.parseInt(split_2[1]), Integer.parseInt(split_3[1])},
@@ -100,12 +107,16 @@ public class OBJLoader {
 							
 								
 								if(split.length > 4) {
-									String[] split_4 = split[4].split("/");
-									current.faces.add(new Face(
-										new int[]{ Integer.parseInt(split_1[0]), Integer.parseInt(split_3[0]), Integer.parseInt(split_4[0])},
-										new int[]{ Integer.parseInt(split_1[1]), Integer.parseInt(split_3[1]), Integer.parseInt(split_4[1])},
-										new int[]{ Integer.parseInt(split_1[2]), Integer.parseInt(split_3[2]), Integer.parseInt(split_4[2])}));
-									count_faces++;
+									for(int i = 4; i < split.length; i++) {
+										//System.out.println(Arrays.toString(split[i].split("/")));
+										String[] split_current = split[i].split("/");
+										String[] split_before = split[i-1].split("/");
+										current.faces.add(new Face(
+											new int[]{ Integer.parseInt(split_1[0]), Integer.parseInt(split_before[0]), Integer.parseInt(split_current[0])},
+											new int[]{ Integer.parseInt(split_1[1]), Integer.parseInt(split_before[1]), Integer.parseInt(split_current[1])},
+											new int[]{ Integer.parseInt(split_1[2]), Integer.parseInt(split_before[2]), Integer.parseInt(split_current[2])}));
+										countFaces++;
+									}
 								}
 							} else {
 								String[] split_4 = split[4].split("/");
@@ -114,7 +125,7 @@ public class OBJLoader {
 									new int[]{Integer.parseInt(split_1[1]), Integer.parseInt(split_2[1]), Integer.parseInt(split_3[1]), Integer.parseInt(split_4[1])},
 									new int[]{Integer.parseInt(split_1[2]), Integer.parseInt(split_2[2]), Integer.parseInt(split_3[2]), Integer.parseInt(split_4[2])}));
 							}
-							count_faces++;
+							countFaces++;
 							break;
 					}
 				}
@@ -131,7 +142,30 @@ public class OBJLoader {
 	}
 	
 	/**
-	 * Loads .mtl from the file system with the use of a scanner
+	 * Loads wavefront file from the file system with the use of Scanner
+	 * @param path File path of model
+	 * @param materials OBJMaterial list to be assigned for every object group
+	 * @param face_type Type of face the model has, either quads or tris
+	 * @return Returns a list of OBJ aka object groups of the model
+	 */
+	public static List<OBJ> getModel(String path, List<OBJMaterial> materials, FaceType faceType) {
+		return getModel(path, materials, faceType, false);
+	}
+	
+	/**
+	 * Loads wavefront file from the file system with the use of Scanner,
+	 * method version where FaceType defaults to F_TRI
+	 * @param path File path of model
+	 * @param materials OBJMaterial list to be assigned for every object group
+	 * @return Returns a list of OBJ aka object groups of the model
+	 */
+	public static List<OBJ> getModel(String path, List<OBJMaterial> materials) {
+		return getModel(path, materials, FaceType.F_TRI);
+				
+	}
+	
+	/**
+	 * Loads .mtl from the file system with the use of Scanner
 	 * @param mtlfilepath File path of the material
 	 * @return Returns a list of all the materials on the file
 	 */
@@ -152,11 +186,11 @@ public class OBJLoader {
 							if(hasData);
 								materials.add(material);
 							material = new OBJMaterial();
-							material.name_material = split[1];
+							material.setNameMaterial(split[1]);
 							hasData = true;
 							break;
 						case "map_Kd":
-							material.name_file = split[1];
+							material.setNameFile(split[1]);
 							break;
 					}
 				}
@@ -175,7 +209,7 @@ public class OBJLoader {
 	}
 	
 	/**
-	 * Finds an object group of name {name} on the model {model}
+	 * Finds an object group of name <tt>name</tt> on the model <tt>model</tt>
 	 * @param model Wavefront model
 	 * @param name Name of the object group
 	 * @return Returns the object group or null if no matching name is found
@@ -183,7 +217,7 @@ public class OBJLoader {
 	public static OBJ findIn(List<OBJ> model, String name) {
 		
 		for(int i = 0; i < model.size(); i++) {
-			if(model.get(i).object_group.equals(name)) {
+			if(model.get(i).objectGroup.equals(name)) {
 				return model.get(i);
 			}
 		}

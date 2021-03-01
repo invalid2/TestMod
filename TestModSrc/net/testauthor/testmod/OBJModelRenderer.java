@@ -15,19 +15,19 @@ import net.testauthor.testmod.OBJ.FaceType;
 public class OBJModelRenderer extends ModelRenderer {
 	
 	OBJ obj;
-	Texture model_texture;
+	Texture modelTexture;
 	
 	/**
 	 * Constructor for an individual OBJ(its actually a object group)
 	 * @param obj Object group from .obj
 	 * @param material_texture_path File path of the model texture, uses .png
 	 */
-	public OBJModelRenderer(OBJ obj, String material_texture_path) {
+	public OBJModelRenderer(OBJ obj, String materialTexturePath) {
 		//Here for compability, must not be used
 		super(0,0);
 		
 		this.obj = obj;
-		this.model_texture = TextureMapper.getTexture(material_texture_path);
+		this.modelTexture = TextureMapper.getTexture(materialTexturePath);
 	}
 	
 	/**
@@ -37,9 +37,9 @@ public class OBJModelRenderer extends ModelRenderer {
 	 * @param z Position Z
 	 */
 	public void setOffset(float x, float y, float z) {
-		this.offsetX = x;
-		this.offsetY = y;
-		this.offsetZ = z;
+		this.offsetX = x/8;
+		this.offsetY = y/8;
+		this.offsetZ = z/8;
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class OBJModelRenderer extends ModelRenderer {
 	 */
 	public void render(float deathfactorscale) {
 		GL11.glScalef(1f, 1f, 1f);
-		DangerZone.wr.loadtexture(model_texture);
+		DangerZone.wr.loadtexture(modelTexture);
 		if (!this.compiled) {
 			this.compileDisplayList();
 		}
@@ -127,9 +127,9 @@ public class OBJModelRenderer extends ModelRenderer {
 			if(obj.getFaceType() == FaceType.F_QUAD) {
 				GL11.glBegin(GL11.GL_QUADS);
 				
-				Vector3f[] normals = { obj.getNormals().get(face.getNormals()[0]-1-obj.count_normals), obj.getNormals().get(face.getNormals()[1]-1-obj.count_normals), obj.getNormals().get(face.getNormals()[2]-1-obj.count_normals), obj.getNormals().get(face.getNormals()[3]-1-obj.count_normals)};
-				Vector2f[] texture_coords = { obj.getTextureCoordinates().get(face.getTextureCoordinates()[0]-1-obj.count_txtcoords), obj.getTextureCoordinates().get(face.getTextureCoordinates()[1]-1-obj.count_txtcoords), obj.getTextureCoordinates().get(face.getTextureCoordinates()[2]-1-obj.count_txtcoords), obj.getTextureCoordinates().get(face.getTextureCoordinates()[3]-1-obj.count_txtcoords)};
-				Vector3f[] vertices = { obj.getVertices().get(face.getVertices()[0]-1-obj.count_vertices), obj.getVertices().get(face.getVertices()[1]-1-obj.count_vertices), obj.getVertices().get(face.getVertices()[2]-1-obj.count_vertices), obj.getVertices().get(face.getVertices()[3]-1-obj.count_vertices)};
+				Vector3f[] normals = { obj.getNormals().get(face.getNormals()[0]-1-obj.countNormals), obj.getNormals().get(face.getNormals()[1]-1-obj.countNormals), obj.getNormals().get(face.getNormals()[2]-1-obj.countNormals), obj.getNormals().get(face.getNormals()[3]-1-obj.countNormals)};
+				Vector2f[] texture_coords = { obj.getTextureCoordinates().get(face.getTextureCoordinates()[0]-1-obj.countTextureCoords), obj.getTextureCoordinates().get(face.getTextureCoordinates()[1]-1-obj.countTextureCoords), obj.getTextureCoordinates().get(face.getTextureCoordinates()[2]-1-obj.countTextureCoords), obj.getTextureCoordinates().get(face.getTextureCoordinates()[3]-1-obj.countTextureCoords)};
+				Vector3f[] vertices = { obj.getVertices().get(face.getVertices()[0]-1-obj.countVertices), obj.getVertices().get(face.getVertices()[1]-1-obj.countVertices), obj.getVertices().get(face.getVertices()[2]-1-obj.countVertices), obj.getVertices().get(face.getVertices()[3]-1-obj.countVertices)};
 				
 				//System.out.println("Vertex of index 0,Txtcoord X:"+texture_coords[0].getX()+" Txtcoord Y:"+texture_coords[0].getY());
 				//System.out.println("Vertex of index 1,Txtcoord X:"+texture_coords[1].getX()+" Txtcoord Y:"+texture_coords[1].getY());
@@ -152,9 +152,9 @@ public class OBJModelRenderer extends ModelRenderer {
 			} else {
 				GL11.glBegin(GL11.GL_TRIANGLES);
 				
-				Vector3f[] normals = { obj.getNormals().get(face.getNormals()[0]-1-obj.count_normals), obj.getNormals().get(face.getNormals()[1]-1-obj.count_normals), obj.getNormals().get(face.getNormals()[2]-1-obj.count_normals)};
-				Vector2f[] texture_coords = { obj.getTextureCoordinates().get(face.getTextureCoordinates()[0]-1-obj.count_txtcoords), obj.getTextureCoordinates().get(face.getTextureCoordinates()[1]-1-obj.count_txtcoords), obj.getTextureCoordinates().get(face.getTextureCoordinates()[2]-1-obj.count_txtcoords)};
-				Vector3f[] vertices = { obj.getVertices().get(face.getVertices()[0]-1-obj.count_vertices), obj.getVertices().get(face.getVertices()[1]-1-obj.count_vertices), obj.getVertices().get(face.getVertices()[2]-1-obj.count_vertices)};
+				Vector3f[] normals = { obj.getNormals().get(face.getNormals()[0]-1-obj.countNormals), obj.getNormals().get(face.getNormals()[1]-1-obj.countNormals), obj.getNormals().get(face.getNormals()[2]-1-obj.countNormals)};
+				Vector2f[] texture_coords = { obj.getTextureCoordinates().get(face.getTextureCoordinates()[0]-1-obj.countTextureCoords), obj.getTextureCoordinates().get(face.getTextureCoordinates()[1]-1-obj.countTextureCoords), obj.getTextureCoordinates().get(face.getTextureCoordinates()[2]-1-obj.countTextureCoords)};
+				Vector3f[] vertices = { obj.getVertices().get(face.getVertices()[0]-1-obj.countVertices), obj.getVertices().get(face.getVertices()[1]-1-obj.countVertices), obj.getVertices().get(face.getVertices()[2]-1-obj.countVertices)};
 				
 				//System.out.println("Vertex of index 0,Txtcoord X:"+texture_coords[0].getX()+" Txtcoord Y:"+texture_coords[0].getY());
 				//System.out.println("Vertex of index 1,Txtcoord X:"+texture_coords[1].getX()+" Txtcoord Y:"+texture_coords[1].getY());

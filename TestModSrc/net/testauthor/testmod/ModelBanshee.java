@@ -2,6 +2,8 @@ package net.testauthor.testmod;
 
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import dangerzone.entities.Entity;
 import net.testauthor.testmod.OBJ.FaceType;
 
@@ -18,7 +20,7 @@ public class ModelBanshee extends OBJModelBase {
 	List<OBJMaterial> materials = OBJLoader.getMaterials("testmodres/banshee.mtl");
 	
 	//Load the model
-	List<OBJ> model = OBJLoader.getModel("testmodres/banshee.obj", materials, FaceType.F_TRI);
+	List<OBJ> model = OBJLoader.getModel("testmodres/banshee.obj", materials, FaceType.F_TRI, true);
 	
 	OBJModelRenderer HandRight;
 	OBJModelRenderer EyeRight;
@@ -120,7 +122,8 @@ public class ModelBanshee extends OBJModelBase {
 	 * @see dangerzoner.ModelRenderer
 	 */
 	public void render( Entity entity, float lifetimeticker, float velocity, float headupdown, float headleftright, float headtilt, float deathfactor) {
-		
+		GL11.glScalef(2, 2, 2);
+		GL11.glTranslatef(0, -16, 0);
 		HandRight.render(deathfactor);
 		EyeRight.render(deathfactor);
 		FingerRight02.render(deathfactor);
@@ -139,6 +142,11 @@ public class ModelBanshee extends OBJModelBase {
 		Head.render(deathfactor);
 		Hair02.render(deathfactor);
 		Hair01.render(deathfactor);
+		Hair01.textureOffsetY += 0.1f;
+		
+		if(Hair01.textureOffsetY > 1)
+			Hair01.textureOffsetY = 0;
+		
 	}
 
 	/**

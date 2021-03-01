@@ -7,22 +7,31 @@ package net.testauthor.testmod;
  * @see OBJLoader
  */
 public class OBJMaterial {
-	String name_material;
-	String name_file;
+	String nameMaterial;
+	String nameFile;
 	
-	public OBJMaterial(String name_mtl, String name_file) {
-		this.name_material = name_mtl;
-		this.name_file = name_file;
+	public OBJMaterial(String nameMaterial, String nameFile) {
+		this.nameMaterial = nameMaterial;
+		this.nameFile = nameFile;
 	}
 	
 	public OBJMaterial() {
 		this(new String(), new String());
 	}
-	public String geName() {
-		return name_material;
+	
+	public String getName() {
+		return nameMaterial;
 	}
 	
 	public String getFileName() {
-		return name_file;
+		return nameFile;
+	}
+	
+	public void setNameMaterial(String nameMaterial) {
+		this.nameMaterial = nameMaterial;
+	}
+	
+	public void setNameFile(String nameFile) {
+		this.nameFile = nameFile;
 	}
 }

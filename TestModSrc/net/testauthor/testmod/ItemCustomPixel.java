@@ -32,8 +32,63 @@ public class ItemCustomPixel extends Item {
 	//The DisplayList id
 	private int compiled_quads_id;
 	
-	/*
+	public ItemCustomPixel(String n, String txt, int txtsize) {
+		super(n, txt);
+		
+		//Position info
+		posx = 0;
+		posy = 0;
+		posz = 0;
+		
+		//Rotation
+		rotationx = 0;
+		rotationy = 0;
+		rotationz = 0;
+		
+		//Scale
+		sx = 1;
+		sy = 1;
+		sz = 1;
+		
+		//Texture size ex 32, 64, 8, etc
+		ITEM_TEXTURE_SIZE = txtsize;
+	}
+	
+	public ItemCustomPixel(String n, String txt, int txtsize, float offsetx, float offsety, float offsetz) {
+		super(n, txt);
+		
+		//Position info
+		posx = offsetx;
+		posy = offsety;
+		posz = offsetz;
+		
+		//Rotation
+		rotationx = 0;
+		rotationy = 0;
+		rotationz = 0;
+		
+		//Scale
+		sx = 1;
+		sy = 1;
+		sz = 1;
+		
+		//Texture size ex 32, 64, 8, etc
+		ITEM_TEXTURE_SIZE = txtsize;
+	}
+	/**
 	 * Big method to allow for more customization and adjusting wihtout having to create another class
+	 * @param n
+	 * @param txt
+	 * @param txtsize
+	 * @param offsetx
+	 * @param offsety
+	 * @param offsetz
+	 * @param anglex
+	 * @param angley
+	 * @param anglez
+	 * @param scalex
+	 * @param scaley
+	 * @param scalez
 	 */
 	public ItemCustomPixel(String n, String txt, int txtsize, float offsetx, float offsety, float offsetz, float anglex, float angley, float anglez, float scalex, float scaley, float scalez) {
 		super(n, txt);
